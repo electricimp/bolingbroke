@@ -1,0 +1,14 @@
+{application, bolingbroke,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  cowboy,
+                  folsom
+                 ]},
+  {mod, { bolingbroke_app, []}},
+  {env, []}
+ ]}.
