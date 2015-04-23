@@ -1,3 +1,3 @@
 # bolingbroke
 
-Quick-and-dirty metrics viewer for Erlang projects that use folsom.
+Quick-and-dirty embedded folsom metrics viewer
