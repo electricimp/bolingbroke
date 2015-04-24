@@ -4,8 +4,13 @@ $(document).ready(function() {
             show: true,
             container: '#legend',
             labelFormatter: function(label, series) {
-                var value = series.data[series.data.length - 1][1];
-                return "&nbsp;" + label + ": " + value;
+                if (series.data.length > 0) {
+                    var value = series.data[series.data.length - 1][1];
+                    return "&nbsp;" + label + ": " + value;
+                }
+                else {
+                    return "&nbsp;" + label;
+                }
             }
         },
         series: {
@@ -76,5 +81,15 @@ $(document).ready(function() {
             _data[i].data.push(null);
         }
     };
+
+    $("#clear").click(function() {
+        for (var i = 0; i < _data.length; ++i) {
+            _data[i].data = [];
+        }
+
+        plot.setData(_data);
+        plot.setupGrid();
+        plot.draw();
+    });
 });
 
