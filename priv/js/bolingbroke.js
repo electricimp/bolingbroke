@@ -69,5 +69,12 @@ $(document).ready(function() {
         plot.setupGrid();
         plot.draw();
     };
+
+    events.onerror = function() {
+        // If we get disconnected, create a break in the series.
+        for (var i = 0; i < _data.length; ++i) {
+            _data[i].data.push(null);
+        }
+    };
 });
 
