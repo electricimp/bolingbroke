@@ -2,7 +2,11 @@ $(document).ready(function() {
     var options = {
         legend: {
             show: true,
-            position: 'ne'
+            container: '#legend',
+            labelFormatter: function(label, series) {
+                var value = series.data[series.data.length - 1][1];
+                return label + ": " + value;
+            }
         },
         series: {
             shadowSize: 0,
