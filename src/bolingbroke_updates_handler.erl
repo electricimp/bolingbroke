@@ -50,8 +50,8 @@ create_json(Patterns) ->
                  end, Metrics),
 
     io_lib:format(
-      "{\"t\":~w,\"m\":[~s]}",
-      [Time, string:join(MetricsJ, ",")]).
+      "{\"node\":\"~s\", \"t\":~w,\"m\":[~s]}",
+      [node(), Time, string:join(MetricsJ, ",")]).
 
 get_stats() ->
     Memory = expand0(folsom_vm_metrics:get_memory(), [memory, vm]),

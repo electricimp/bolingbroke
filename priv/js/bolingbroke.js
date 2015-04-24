@@ -48,6 +48,9 @@ $(document).ready(function() {
     var events = new EventSource("/updates" + document.location.search);
     events.onmessage = function(e) {
         var update = JSON.parse(e.data);
+        if (update.node != document.title) {
+            document.title = update.node;
+        }
 
         for (var i = 0; i < update.m.length; ++i) {
             if (_data.length <= i) {
