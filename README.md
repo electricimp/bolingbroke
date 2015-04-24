@@ -2,6 +2,8 @@
 
 Quick-and-dirty embedded folsom metrics viewer.
 
+![Screenshot](/Screenshot.png?raw=true)
+
 ## Usage
 
 1. Make sure that the `bolingbroke` application is started.
