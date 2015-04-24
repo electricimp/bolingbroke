@@ -5,7 +5,7 @@ $(document).ready(function() {
             container: '#legend',
             labelFormatter: function(label, series) {
                 var value = series.data[series.data.length - 1][1];
-                return label + ": " + value;
+                return "&nbsp;" + label + ": " + value;
             }
         },
         series: {
