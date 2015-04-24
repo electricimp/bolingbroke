@@ -5,12 +5,39 @@ $(document).ready(function() {
             position: 'ne'
         },
         series: {
-            shadowSize: 0
+            shadowSize: 0,
+            lines: { show: true, fill: false },
+            points: { show: true },
+        },
+        grid: {
+            hoverable: true
         },
         xaxis: { mode: "time" },
         yaxis: { min: 0 }
     };
     var plot = $.plot($("#chart"), [], options);
+
+    $("<div id='tooltip'></div>").css({
+        position: "absolute",
+        display: "none",
+        border: "1px solid #fdd",
+        padding: "2px",
+        "background-color": "#fee",
+        opacity: 0.80
+    }).appendTo("body");
+
+    $("#chart").bind("plothover", function(event, pos, item) {
+        if (item) {
+            var x = new Date(item.datapoint[0]),
+            y = item.datapoint[1].toFixed(2);
+
+            $("#tooltip").html(item.series.label + " at " + x.toUTCString() + " = " + y)
+            .css({top: item.pageY+5, left: item.pageX+5})
+            .fadeIn(200);
+        } else {
+            $("#tooltip").hide();
+        }
+    });
 
     var _data = [];
 
@@ -22,8 +49,7 @@ $(document).ready(function() {
             if (_data.length <= i) {
                 var series = {
                     label: update.m[i].n,
-                    data: [],
-                    lines: { show: true, fill: false }
+                    data: []
                 };
                 _data.push(series);
             }
