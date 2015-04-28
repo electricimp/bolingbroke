@@ -67,7 +67,16 @@ $(document).ready(function() {
             }
 
             point = [update.t, update.m[i].v];
-            _data[i].data.push(point);
+
+            // Note that this assumes that the data array is in the same order
+            // as the update.
+            // TODO: Something that's not O(n^2)
+            for (var j = 0; j < _data.length; ++j) {
+                if (_data[j].label === update.m[i].n) {
+                    _data[j].data.push(point);
+                    break;
+                }
+            }
         }
 
         plot.setData(_data);
