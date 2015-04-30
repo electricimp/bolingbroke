@@ -16,10 +16,11 @@ $(document).ready(function() {
         series: {
             shadowSize: 0,
             lines: { show: true, fill: false },
-            points: { show: true },
+            points: { show: false },
         },
         grid: {
-            hoverable: true
+            hoverable: true,
+            clickable: false
         },
         xaxis: { mode: "time" },
         yaxis: { min: 0 }
