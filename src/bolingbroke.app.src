@@ -10,5 +10,6 @@
                   folsom
                  ]},
   {mod, { bolingbroke_app, []}},
-  {env, []}
+  {env, [{port, 18360},
+         {update_interval_ms, 10000}]}
  ]}.

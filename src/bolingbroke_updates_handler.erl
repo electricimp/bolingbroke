@@ -1,15 +1,15 @@
 -module(bolingbroke_updates_handler).
 -export([init/3, info/3, terminate/3]).
 
--define(DEFAULT_INTERVAL_MS, 1000).
+-define(DEFAULT_INTERVAL_MS, 10000).
 
-init(_Type, Req, Opts) ->
+init(_Type, Req, _Opts) ->
     Headers = [{<<"content-type">>, <<"text/event-stream">>}],
     {ok, Req2} = cowboy_req:chunked_reply(200, Headers, Req),
 
     self() ! update,
 
-    State = Opts,
+    State = undefined,
     {loop, Req2, State}.
 
 info(update, Req, State) ->
@@ -20,9 +20,8 @@ info(update, Req, State) ->
              "\r\n"],
     ok = cowboy_req:chunk(Chunk, Req),
 
-    erlang:send_after(
-      proplists:get_value(interval_ms, State, ?DEFAULT_INTERVAL_MS),
-      self(), update),
+    IntervalMs = application:get_env(bolingbroke, update_interval_ms, ?DEFAULT_INTERVAL_MS),
+    erlang:send_after(IntervalMs, self(), update),
 
     {loop, Req2, State}.
 
