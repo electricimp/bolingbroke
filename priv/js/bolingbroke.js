@@ -73,8 +73,32 @@ $(document).ready(function() {
             // as the update.
             // TODO: Something that's not O(n^2)
             for (var j = 0; j < _data.length; ++j) {
-                if (_data[j].label === update.m[i].n) {
-                    _data[j].data.push(point);
+                var series = _data[j];
+                if (series.label === update.m[i].n) {
+                    var length = series.data.length;
+                    // If the value hasn't changed in the last *two* intervals,
+                    // move the last item to the right.
+                    // It has to be the last *two* intervals, otherwise we risk
+                    // screwing up the slope.
+                    if (length >= 2) {
+                        var older = series.data[length - 2];
+                        var old = series.data[length - 1];
+
+                        if (older[1] == old[1] && old[1] == point[1]) {
+                            // It's not changed; move the previous one to the
+                            // right.
+                            old[0] = point[0];
+                        }
+                        else {
+                            // It changed; add a new point.
+                            series.data.push(point);
+                        }
+                    }
+                    else {
+                        // We don't have enough history:
+                        series.data.push(point);
+                    }
+
                     break;
                 }
             }
