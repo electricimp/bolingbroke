@@ -58,6 +58,39 @@ $(document).ready(function() {
             document.title = update.node;
         }
 
+        function updateSeries(series, point) {
+            var length = series.data.length;
+
+            // If the value hasn't changed in the last *two* intervals,
+            // move the last item to the right.
+            // It has to be the last *two* intervals, otherwise we risk
+            // screwing up the slope.
+            if (length < 2) {
+                // We don't have enough history:
+                series.data.push(point);
+            }
+            else {
+                var older = series.data[length - 2];
+                var old = series.data[length - 1];
+
+                if (older == null || old == null) {
+                    // We disconnected; there are nulls in there.
+                    series.data.push(point);
+                }
+                else {
+                    if (older[1] == old[1] && old[1] == point[1]) {
+                        // It's not changed; move the previous one to the
+                        // right.
+                        old[0] = point[0];
+                    }
+                    else {
+                        // It changed; add a new point.
+                        series.data.push(point);
+                    }
+                }
+            }
+        }
+
         for (var i = 0; i < update.m.length; ++i) {
             if (_data.length <= i) {
                 var series = {
@@ -67,38 +100,11 @@ $(document).ready(function() {
                 _data.push(series);
             }
 
-            point = [update.t, update.m[i].v];
-
-            // Note that this assumes that the data array is in the same order
-            // as the update.
-            // TODO: Something that's not O(n^2)
             for (var j = 0; j < _data.length; ++j) {
                 var series = _data[j];
                 if (series.label === update.m[i].n) {
-                    var length = series.data.length;
-                    // If the value hasn't changed in the last *two* intervals,
-                    // move the last item to the right.
-                    // It has to be the last *two* intervals, otherwise we risk
-                    // screwing up the slope.
-                    if (length >= 2) {
-                        var older = series.data[length - 2];
-                        var old = series.data[length - 1];
-
-                        if (older[1] == old[1] && old[1] == point[1]) {
-                            // It's not changed; move the previous one to the
-                            // right.
-                            old[0] = point[0];
-                        }
-                        else {
-                            // It changed; add a new point.
-                            series.data.push(point);
-                        }
-                    }
-                    else {
-                        // We don't have enough history:
-                        series.data.push(point);
-                    }
-
+                    point = [update.t, update.m[i].v];
+                    updateSeries(series, point);
                     break;
                 }
             }
