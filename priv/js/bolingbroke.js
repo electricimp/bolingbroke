@@ -5,12 +5,14 @@ $(document).ready(function() {
             container: '#legend',
             labelFormatter: function(label, series) {
                 if (series.data.length > 0) {
-                    var value = series.data[series.data.length - 1][1];
-                    return "&nbsp;" + label + ": " + value;
+                    var old = series.data[series.data.length - 1];
+                    if (old != null) {
+                        var value = old[1];
+                        return "&nbsp;" + label + ": " + value;
+                    }
                 }
-                else {
-                    return "&nbsp;" + label;
-                }
+
+                return "&nbsp;" + label;
             }
         },
         series: {
