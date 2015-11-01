@@ -52,11 +52,13 @@ create_json(Patterns) ->
       "{\"node\":\"~s\", \"t\":~w,\"m\":[~s]}",
       [node(), Time, string:join(MetricsJ, ",")]).
 
+%% @doc Lifted from folsomite_server.erl
 get_stats() ->
     Memory = expand0(folsom_vm_metrics:get_memory(), [memory, vm]),
     Stats = expand0(folsom_vm_metrics:get_statistics(), [vm]),
+    Procs = expand0([{processes, erlang:system_info(process_count)}], [vm]),
     Metrics = folsom_metrics:get_metrics_info(),
-    Memory ++ Stats ++ lists:flatmap(fun expand_metric/1, Metrics).
+    Memory ++ Stats ++ Procs ++ lists:flatmap(fun expand_metric/1, Metrics).
 
 
 %% @doc Returns `[]' for unknown (skipped) metricts.
