@@ -8,6 +8,7 @@ start(_StartType, _StartArgs) ->
               {'_', [
                      {"/", cowboy_static, {priv_file, bolingbroke, "static/index.html"}},
                      {"/updates", bolingbroke_updates_handler, []},
+                     {"/query", bolingbroke_query_handler, []},
 
                      {"/js/[...]", cowboy_static, {priv_dir, bolingbroke, "js"}},
                      {"/css/[...]", cowboy_static, {priv_dir, bolingbroke, "css"}}

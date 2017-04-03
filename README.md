@@ -16,3 +16,9 @@ If you want to replicate the example given in the screenshot:
 
     $ erl -pa deps/*/ebin -pa ebin -s bolingbroke
     1> {ok, _} = bolingbroke_example:start_link().
+
+## Point-in-time queries
+
+You can get a point-in-time view of a metric as follows:
+
+    curl -s http://localhost:18360/query?foo&bar
