@@ -21,7 +21,7 @@ create_json(Patterns) ->
                  fun({Name, Value}) ->
                          lists:flatten(
                            io_lib:format("{\"n\":\"~s\",\"v\":~w}",
-                                         [stringify(Name), Value]))
+                                         [stringify(Name), nullify(Value)]))
                  end, Metrics),
 
     io_lib:format(
@@ -77,6 +77,11 @@ stringify(X) when is_float(X) -> float_to_list(X);
 stringify(X) when is_binary(X) -> binary_to_list(X);
 stringify(X) when is_tuple(X) ->
     string:join([stringify(A) || A <- tuple_to_list(X)], ".").
+
+nullify(undefined) ->
+    null;
+nullify(X) ->
+    X.
 
 unix_time_ms({Me, Se, Mi}) ->
     (Me * 1000 * 1000 * 1000) + (Se * 1000) + trunc(Mi / 1000).
