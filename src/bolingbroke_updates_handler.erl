@@ -1,29 +1,29 @@
 -module(bolingbroke_updates_handler).
--export([init/3, info/3, terminate/3]).
+-export([init/2, info/3, terminate/3]).
 
 -define(DEFAULT_INTERVAL_MS, 10000).
 
-init(_Type, Req, _Opts) ->
-    Headers = [{<<"content-type">>, <<"text/event-stream">>}],
-    {ok, Req2} = cowboy_req:chunked_reply(200, Headers, Req),
+init(Req0, _Opts) ->
+    Headers = #{<<"content-type">> => <<"text/event-stream">>},
+    Req = cowboy_req:stream_reply(200, Headers, Req0),
 
     self() ! update,
 
     State = undefined,
-    {loop, Req2, State}.
+    {cowboy_loop, Req, State}.
 
 info(update, Req, State) ->
-    {Qs, Req2} = cowboy_req:qs(Req),
+    Qs = cowboy_req:qs(Req),
     Patterns = [binary_to_list(P) || P <- binary:split(Qs, <<"&">>, [global])],
     JSON = bolingbroke_query:create_json(Patterns),
-    Chunk = ["data: ", JSON, "\r\n",
-             "\r\n"],
-    ok = cowboy_req:chunk(Chunk, Req),
+    ok = cowboy_req:stream_events(#{ id => next_id(), data => JSON }, nofin, Req),
 
     IntervalMs = application:get_env(bolingbroke, update_interval_ms, ?DEFAULT_INTERVAL_MS),
     erlang:send_after(IntervalMs, self(), update),
-
-    {loop, Req2, State}.
+    {ok, Req, State}.
 
 terminate(_Reason, _Req, _State) ->
     ok.
+
+next_id() ->
+    integer_to_list(erlang:unique_integer([positive, monotonic]), 16).
