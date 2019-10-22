@@ -14,9 +14,9 @@ start(_StartType, _StartArgs) ->
                      {"/css/[...]", cowboy_static, {priv_dir, bolingbroke, "css"}}
                     ]}],
     Dispatch = cowboy_router:compile(Routes),
-    {ok, _} = cowboy:start_http(bolingbroke_http, 10,
-                               [{port, Port}],
-                               [{env, [{dispatch, Dispatch}]}]),
+    {ok, _} = cowboy:start_clear(bolingbroke_http,
+                                 [{port, Port}],
+                                 #{env => #{dispatch => Dispatch}}),
     bolingbroke_sup:start_link().
 
 stop(_State) ->
